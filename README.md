@@ -9,8 +9,8 @@ NodeMCU sketch to control led strip
     - API:
         | Command | Description |
         | --- | --- |
-        | / | To start the action described in the body |
-        | /status | To receive the status of the colors |
+        | /ps | To start the action described in the body |
+        | /ps/status | To receive the status of the colors |
     - JSON body to send:
        ```json
          {
