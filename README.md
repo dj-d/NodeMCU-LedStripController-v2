@@ -19,7 +19,7 @@ NodeMCU sketch to control led strip
            "blue": 50
          }
        ```
-    -JSON body received following the request /status:
+    - JSON body received following the request /status:
        ```json
          {
            "red": 40,
