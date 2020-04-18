@@ -30,5 +30,3 @@ NodeMCU sketch to control led strip
 
 ### Development
 - [ ] Button to reset wifi
-
-
