@@ -11,12 +11,20 @@ NodeMCU sketch to control led strip
         | --- | --- |
         | / | To start the action described in the body |
         | /status | To receive the status of the colors |
-    - Body of JSON:
+    - JSON body to send:
        ```json
          {
            "red": 100,
            "green": 200,
            "blue": 50
+         }
+       ```
+    -JSON body received following the request /status:
+       ```json
+         {
+           "red": 40,
+           "green": 20,
+           "blue": 250
          }
        ```
 
