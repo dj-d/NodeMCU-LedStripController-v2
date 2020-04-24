@@ -34,25 +34,6 @@ bool status_relay[] = {false, false, false, false};
 /*********************************************************************/
 
 /**
- * Send response
- * 
- * @param html_code HTML status code
- * @param message 
- */
-void sendResponse(int html_code, String message) {
-    String body;
-    DynamicJsonDocument raw_body(1024);
-
-    raw_body["msg"] = message;
-
-    serializeJson(raw_body, body);
-
-    server.send(html_code, "text/json", body);
-}
-
-/*********************************************************************/
-
-/**
  * Check if the value received for the color is correct
  * 
  * @param value color value
@@ -179,30 +160,33 @@ void checkArgs() {
     int html_code;
     String message = "";
 
-    DynamicJsonDocument color(1024);
+    DynamicJsonDocument request_body(1024);
+    DynamicJsonDocument response_body(1024);
 
     if (server.hasArg("plain") == false) {
         html_code = 400;
         message = "Body not found";
     } else {
-        deserializeJson(color, server.arg("plain"));
+        deserializeJson(request_body, server.arg("plain"));
         
-        int red = color["red"];
-        int green = color["greeb"];
-        int blue = color["blue"];
+        int red = request_body["red"];
+        int green = request_body["greeb"];
+        int blue = request_body["blue"];
 
         if (!is_valid_color_value(red) || !is_valid_color_value(green) || !is_valid_color_value(blue)) {
             html_code = 400;
-            message = "Color value not found";
+            response_body = "Color value not found";
         } else {
             html_code = 200;
-            message = "Successful action";
+            response_body = "Successful action";
 
             set_color(red, green, blue);
         }
     }
 
-    sendResponse(html_code, message);
+    serializeJson(response_body, message);
+
+    server.send(html_code, "text/json", message);
 }
 
 /*********************************************************************/
@@ -221,7 +205,7 @@ void getStatus() {
 
     serializeJson(doc, status);
 
-    sendResponse(html_code, status);
+    server.send(html_code, "text/json", status);
 }
 
 /*********************************************************************/
@@ -233,22 +217,23 @@ void checkRelayArgs() {
     int html_code;
     String message = "";
 
-    DynamicJsonDocument body(1024);
+    DynamicJsonDocument request_body(1024);
+    DynamicJsonDocument response_body(1024);
 
     if (server.hasArg("plain") == false) {
         html_code = 400;
-        message = "Body not found";
+        response_body["msg"] = "Body not found";
     } else {
-        deserializeJson(body, server.arg("plain"));
+        deserializeJson(request_body, server.arg("plain"));
 
-        String action = body["action"];
-        int pin = body["pin"];
+        String action = request_body["action"];
+        int pin = request_body["pin"];
         pin -= 1;
 
         if (action == "on" || action == "off") {
-            if (is_valid_relay_pin(body["pin"])) {
+            if (is_valid_relay_pin(request_body["pin"])) {
                 html_code = 200;
-                message = "Successful action";
+                response_body["msg"] = "Successful action";
 
                 if (action == "on") {
                     turnOn(relay[pin]);
@@ -259,15 +244,17 @@ void checkRelayArgs() {
                 }
             } else {
                 html_code = 400;
-                message = "Relay number not found";
+                response_body["msg"] = "Relay number not found";
             }
         } else {
             html_code = 400;
-            message = "Action not found";
+            response_body["msg"] = "Action not found";
         }
     }
 
-    sendResponse(html_code, message);
+    serializeJson(response_body, message);
+
+    server.send(html_code, "text/json", message);
 }
 
 /*********************************************************************/
@@ -289,7 +276,21 @@ void getRelayStatus() {
 
     serializeJson(doc, status);
 
-    sendResponse(html_code, status);
+    server.send(html_code, "text/json", status);
+}
+
+/**
+ * Send the number of relays
+ */
+void getRelayNumber() {
+    String data;
+    DynamicJsonDocument doc(1024);
+
+    doc["number"] = get_relay_size();
+
+    serializeJson(doc, data);
+
+    server.send(200, "text/json", data);
 }
 
 /*********************************************************************/
@@ -324,6 +325,7 @@ void setup() {
 
     server.on("/ps", checkRelayArgs);
     server.on("/ps/status", getRelayStatus);
+    server.on("/ps/get_relay_number", getRelayNumber);
 
     server.begin();
 }
