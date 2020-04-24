@@ -165,7 +165,7 @@ void checkArgs() {
 
     if (server.hasArg("plain") == false) {
         html_code = 400;
-        message = "Body not found";
+        response_body["msg"] = "Body not found";
     } else {
         deserializeJson(request_body, server.arg("plain"));
         
@@ -175,10 +175,10 @@ void checkArgs() {
 
         if (!is_valid_color_value(red) || !is_valid_color_value(green) || !is_valid_color_value(blue)) {
             html_code = 400;
-            response_body = "Color value not found";
+            response_body["msg"] = "Color value not found";
         } else {
             html_code = 200;
-            response_body = "Successful action";
+            response_body["msg"] = "Successful action";
 
             set_color(red, green, blue);
         }
