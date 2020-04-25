@@ -148,6 +148,20 @@ void getStatus() {
     server.send(html_code, "text/json", status);
 }
 
+/**
+ * Send device type
+ */
+void getType() {
+    String data;
+    DynamicJsonDocument doc(1024);
+
+    doc["type"] = "led_strip_controller";
+
+    serializeJson(doc, data);
+
+    server.send(200, "text/json", data);
+}
+
 /*********************************************************************/
 
 void setup() {
@@ -176,6 +190,7 @@ void setup() {
 
     server.on("/rgb", checkArgs);
     server.on("/rgb/status", getStatus);
+    server.on("/rgb/get_type", getStatus);
 
     server.begin();
 }

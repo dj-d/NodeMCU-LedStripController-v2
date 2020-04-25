@@ -11,6 +11,7 @@ NodeMCU sketch to control led strip
   | --- | --- | --- | --- |
   | To start the action described in the body| __POST__ | /rgb | "*__red__*", "*__green__*" and "*__blue__*" |
   | To receive the status of the colors | __GET__ | /rgb/status | - |
+  | To receive the type of device | __GET__ | /rgb/get_type | - |
 
 - __Examples__
 
@@ -36,6 +37,13 @@ NodeMCU sketch to control led strip
           "red": 120,
           "green": 250,
           "blue": 40
+        }
+    ```
+  
+  - Response body for "*__/rgb/get_type__*":
+    ```json
+        {
+          "type": "led_strip_controller"
         }
     ```
 
