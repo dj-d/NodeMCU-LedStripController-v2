@@ -293,6 +293,21 @@ void getRelayNumber() {
     server.send(200, "text/json", data);
 }
 
+/**
+ * Send device type
+ */
+void getType() {
+    String data;
+    DynamicJsonDocument doc(1024);
+
+    doc["type"] = "led_strip_controller";
+    doc["type_2"] = "power_strip";
+
+    serializeJson(doc, data);
+
+    server.send(200, "text/json", data);
+}
+
 /*********************************************************************/
 
 void setup() {
@@ -326,6 +341,8 @@ void setup() {
     server.on("/ps", checkRelayArgs);
     server.on("/ps/status", getRelayStatus);
     server.on("/ps/get_relay_number", getRelayNumber);
+
+    server.on("/get_type", getType);
 
     server.begin();
 }
