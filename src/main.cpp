@@ -190,7 +190,7 @@ void setup() {
 
     server.on("/rgb", checkArgs);
     server.on("/rgb/status", getStatus);
-    server.on("/rgb/get_type", getStatus);
+    server.on("/get_type", getStatus);
 
     server.begin();
 }
